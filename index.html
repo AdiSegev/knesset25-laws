@@ -63,6 +63,8 @@ h2.sec:before{content:"";width:6px;height:28px;border-radius:4px;background:var(
 .pl:hover{border-color:var(--b500);color:var(--b600)}
 .pl.on{background:var(--b600);border-color:var(--b600);color:#fff}
 .pl-l{margin-top:12px;font-size:13px;font-weight:700;color:var(--mut)}.pl-l+.pills{padding-top:6px}
+.pl-n{margin-top:6px;font-size:12.5px;color:var(--mut)}
+.mgn{font-size:13.5px;color:var(--b700);background:var(--b50);border-radius:8px;padding:6px 10px;margin:0}
 .cnt{margin:14px 2px 0;font-size:14px;color:var(--mut)}
 @media(max-width:700px){.filters{position:static}.pills{flex-wrap:wrap;overflow:visible}}
 .cat{margin-top:34px;scroll-margin-top:130px}
@@ -129,6 +131,7 @@ footer.f p{margin:0 0 8px;max-width:820px}
       </div>
       <div class="pl-l">סינון לפי מפלגה</div>
       <div class="pills" id="pnav"></div>
+      <div class="pl-n">חמש הצעות ממשלה שאוחדו עם הצעה של חבר כנסת מהקואליציה נספרות גם בממשלה וגם בסיעה, ולכן סכום הסיעות גדול ב-5 ממספר הצעות חברי הכנסת.</div>
       <div class="pl-l">סינון לפי תחום</div>
       <div class="pills" id="nav"></div>
     </div>
@@ -656,6 +659,8 @@ cats.forEach(c=>c.laws.push(...(NEW[c.id]||[])));
 const COAL=[P.L,P.S,P.U,P.Z,P.O,P.N];
 cats.forEach(c=>c.laws=c.laws.filter(l=>l[3].startsWith("הממשלה")||COAL.some(n=>l[3].startsWith(n+" · "))));
 const key=[2219317,2225386,2167975,2214887,2201200,2195679];
+const MG={2219317:'החוק אוחד עם הצעות של מירב כהן (יש עתיד) ואימאן ח\'טיב יאסין (רע"ם) מהאופוזיציה.',2195679:'החוק אוחד עם הצעות של נעמה לזימי (העבודה) ועאידה תומא-סלימאן (חד"ש-תע"ל) מהאופוזיציה.'};
+const mg=id=>MG[id]?`<p class="mgn">${MG[id]}</p>`:"";
 const url=id=>"https://main.knesset.gov.il/apps/legislation/main/bills/"+id;
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const ic=k=>`<span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">${I[k]}</svg></span>`;
@@ -670,9 +675,9 @@ const total=Object.keys(all).length;
 $("#k1").textContent=total;$("#hn").textContent=total;
 $("#k3").textContent=Object.values(all).filter(l=>l.p.startsWith("הממשלה")).length;
 const used=new Set();Object.values(all).forEach(l=>l.pp.forEach(n=>{if(n!=="הממשלה")used.add(n)}));
-$("#keygrid").innerHTML=key.map(id=>{const l=all[id];return `<div class="fi">${ic(l.c)}<h3>${esc(l.t)}</h3><p>${esc(l.d)}</p><div class="chips"><span class="chip">${l.ct}</span><span class="chip g">${esc(short(l.p))}</span></div><a class="lnk" href="${url(id)}" target="_blank" rel="noopener">לדף החוק באתר הכנסת ←</a></div>`}).join("");
+$("#keygrid").innerHTML=key.map(id=>{const l=all[id];return `<div class="fi">${ic(l.c)}<h3>${esc(l.t)}</h3><p>${esc(l.d)}</p>${mg(id)}<div class="chips"><span class="chip">${l.ct}</span><span class="chip g">${esc(short(l.p))}</span></div><a class="lnk" href="${url(id)}" target="_blank" rel="noopener">לדף החוק באתר הכנסת ←</a></div>`}).join("");
 ["הממשלה",...[...used].sort()].forEach(n=>$("#ps").insertAdjacentHTML("beforeend",`<option>${n}</option>`));
-$("#list").innerHTML=cats.map(c=>`<div class="cat" id="${c.id}" data-c="${c.id}"><div class="cat-h">${ic(c.id)}<div><h3>${c.t}</h3><small>${c.d}</small></div><span class="n"></span></div>${c.laws.map(l=>`<div class="law" data-id="${l[0]}"><button type="button" aria-expanded="false"><span class="t">${esc(l[1])}</span>${CH}</button><div class="acc"><div class="bd"><p>${esc(l[2])}</p><div class="chips"><span class="chip">הוצע ע"י ${esc(l[3])}</span><span class="chip g">פורסם ${l[4]}</span></div><p style="margin:12px 0 0"><a class="lnk" href="${url(l[0])}" target="_blank" rel="noopener">לדף החוק באתר הכנסת ←</a></p></div></div></div>`).join("")}</div>`).join("");
+$("#list").innerHTML=cats.map(c=>`<div class="cat" id="${c.id}" data-c="${c.id}"><div class="cat-h">${ic(c.id)}<div><h3>${c.t}</h3><small>${c.d}</small></div><span class="n"></span></div>${c.laws.map(l=>`<div class="law" data-id="${l[0]}"><button type="button" aria-expanded="false"><span class="t">${esc(l[1])}</span>${CH}</button><div class="acc"><div class="bd"><p>${esc(l[2])}</p>${mg(l[0])}<div class="chips"><span class="chip">הוצע ע"י ${esc(l[3])}</span><span class="chip g">פורסם ${l[4]}</span></div><p style="margin:12px 0 0"><a class="lnk" href="${url(l[0])}" target="_blank" rel="noopener">לדף החוק באתר הכנסת ←</a></p></div></div></div>`).join("")}</div>`).join("");
 let cur="";
 const pcount=n=>Object.values(all).filter(l=>l.pp.includes(n)).length;
 $("#pnav").innerHTML='<button class="pl on" data-p="">הכול</button>'+["הממשלה",...[...used].sort((a,b)=>pcount(b)-pcount(a))].map(n=>`<button class="pl" data-p="${n}">${n} (${pcount(n)})</button>`).join("");
