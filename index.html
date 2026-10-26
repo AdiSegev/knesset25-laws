@@ -1,10 +1,10 @@
 <!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
-<meta property="og:title" content="הישגי הממשלה והכנסת ה-25" />
-<meta property="og:description" content="453 חוקים של הממשלה ושל סיעות הקואליציה שאושרו בקריאה שלישית." />
-<meta property="og:image" content="https://knesset25-laws.onrender.com/banner.jpg" />
-<meta property="og:url" content="https://knesset25-laws.onrender.com/" />
-<meta property="og:type" content="website" />
-<link rel="icon" type="image/jpeg" href="logo.jpg" />
+<meta property="og:title" content="הישגי הממשלה והכנסת ה-25">
+<meta property="og:description" content="453 חוקים של הממשלה ושל סיעות הקואליציה שאושרו בקריאה שלישית.">
+<meta property="og:image" content="https://knesset25-laws.onrender.com/banner.jpg">
+<meta property="og:url" content="https://knesset25-laws.onrender.com/">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/jpeg" href="logo.jpg">
 <title>הישגי הכנסת ה-25</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap">
@@ -58,7 +58,7 @@ h2.sec:before{content:"";width:6px;height:28px;border-radius:4px;background:var(
 .ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .chip{font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--b50);color:var(--b700);border:1px solid var(--b100)}
-.chip.g{background:#f1f5f9;color:#475569;border-color:var(--line)}
+.chip.g{background:#f1f5f9;color:#475569;border-color:var(--line)}.fi .chip[data-c],.fi .chip[data-p]{cursor:pointer;transition:background .15s,border-color .15s,color .15s}.fi .chip[data-c]:hover,.fi .chip[data-p]:hover{background:var(--b100);border-color:var(--b500);color:var(--b700)}
 .lnk{font-size:13.5px;font-weight:700;color:var(--b600);text-decoration:none}
 .lnk:hover{text-decoration:underline}
 .filters{position:sticky;top:61px;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 6px 18px -10px rgba(15,23,42,.25)}
@@ -104,7 +104,7 @@ footer.f p{margin:0 0 8px;max-width:820px}
 <div class="stripe"></div>
 <header class="top"><div class="wrap in">
   <div class="brand"><div style="display: flex; align-items: center; gap: 8px;">
-    <img id="logoImg" src="logo.jpg" alt="לוגו" style="height: 40px; border-radius: 50%;" />
+    <img id="logoImg" src="logo.jpg" alt="לוגו" style="height: 40px; border-radius: 50%;"/>
     <span id="brandTxt">הכנסת ה-25</span>
   </div></div>
   <div class="top-r">
@@ -976,7 +976,7 @@ const COAL=[P.L,P.S,P.U,P.Z,P.O,P.N];
 cats.forEach(c=>c.laws=c.laws.filter(l=>l[3].startsWith("הממשלה")||COAL.some(n=>l[3].startsWith(n+" · "))));
 const key=[2219317,2225386,2167975,2214887,2201200,2195679];
 const url=id=>"https://main.knesset.gov.il/apps/legislation/main/bills/"+id;
-const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const ic=k=>`<span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">${I[k]}</svg></span>`;
 const all={};
 cats.forEach(c=>c.laws.forEach(l=>{
@@ -1007,6 +1007,8 @@ const pcount=n=>Object.values(all).filter(l=>l.pp.includes(n)).length;
 
 let curLang="he";
 let cur="";
+let curP="";
+const rawShortParty=l=>l.p_he.startsWith("הממשלה")?"הממשלה":l.p_he.split(" · ")[0];
 
 function partyLabel(heName,lang){
   const code=HE_TO_CODE[heName];
@@ -1074,10 +1076,9 @@ function renderLanguage(lang){
   document.querySelectorAll(".lbtn").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
 
   // Preserve current party filter value (stored as canonical Hebrew party key)
-  const prevP=$("#ps").value;
   const sortedParties=["הממשלה",...[...used].sort((a,b)=>partyLabel(a,lang).localeCompare(partyLabel(b,lang),lang))];
   $("#ps").innerHTML=`<option value="">${esc(u.allParties)}</option>`+sortedParties.map(n=>`<option value="${esc(n)}">${esc(partyLabel(n,lang))}</option>`).join("");
-  $("#ps").value=prevP;
+  $("#ps").value=curP;
 
   const byCountParties=["הממשלה",...[...used].sort((a,b)=>pcount(b)-pcount(a))];
   $("#pnav").innerHTML=`<button type="button" class="pl" data-p="">${esc(u.allBtn)}</button>`+byCountParties.map(n=>`<button type="button" class="pl" data-p="${encodeURIComponent(n)}">${esc(partyLabel(n,lang))} (${pcount(n)})</button>`).join("");
@@ -1088,7 +1089,7 @@ function renderLanguage(lang){
   // Render Key Achievements grid
   $("#keygrid").innerHTML=key.map(id=>{
     const l=all[id];
-    return `<div class="fi">${ic(l.c)}<h3>${esc(lawTitle(l,lang))}</h3><p>${esc(lawDesc(l,lang))}</p>${mgHtml(id,lang)}<div class="chips"><span class="chip">${esc(catTitle(l.c,lang))}</span><span class="chip g">${esc(shortParty(l,lang))}</span></div><a class="lnk" href="${url(id)}" target="_blank" rel="noopener">${esc(u.lawLnk)}</a></div>`;
+    return `<div class="fi">${ic(l.c)}<h3>${esc(lawTitle(l,lang))}</h3><p>${esc(lawDesc(l,lang))}</p>${mgHtml(id,lang)}<div class="chips"><span class="chip" data-c="${l.c}">${esc(catTitle(l.c,lang))}</span><span class="chip g" data-p="${encodeURIComponent(rawShortParty(l))}">${esc(shortParty(l,lang))}</span></div><a class="lnk" href="${url(id)}" target="_blank" rel="noopener">${esc(u.lawLnk)}</a></div>`;
   }).join("");
 
   // Preserve open accordion state across language switch
@@ -1104,12 +1105,21 @@ function renderLanguage(lang){
   apply();
 }
 
-const syncP=()=>document.querySelectorAll("#pnav .pl").forEach(x=>x.classList.toggle("on",decodeURIComponent(x.dataset.p)===$("#ps").value));
-$("#pnav").addEventListener("click",e=>{const b=e.target.closest(".pl");if(!b)return;$("#ps").value=decodeURIComponent(b.dataset.p);syncP();apply()});
+const syncP=()=>{
+  $("#ps").value=curP;
+  document.querySelectorAll("#pnav .pl").forEach(x=>x.classList.toggle("on",decodeURIComponent(x.dataset.p)===curP));
+};
+$("#pnav").addEventListener("click",e=>{const b=e.target.closest(".pl");if(!b)return;curP=decodeURIComponent(b.dataset.p);syncP();apply()});
+$("#keygrid").addEventListener("click",e=>{
+  const pc=e.target.closest(".chip[data-p]");
+  if(pc){curP=decodeURIComponent(pc.dataset.p);syncP();apply();$("#laws").scrollIntoView({behavior:"smooth"});return}
+  const cc=e.target.closest(".chip[data-c]");
+  if(cc){cur=cc.dataset.c;document.querySelectorAll("#nav .pl").forEach(x=>x.classList.toggle("on",x.dataset.c===cur));apply();$("#"+cur).scrollIntoView({behavior:"smooth"})}
+});
 $("#list").addEventListener("click",e=>{const b=e.target.closest(".law>button");if(!b)return;const w=b.parentNode;const o=w.classList.toggle("open");b.setAttribute("aria-expanded",o)});
 
 function apply(){
-  const q=$("#q").value.trim().toLowerCase(),p=$("#ps").value;let shown=0;
+  const q=$("#q").value.trim().toLowerCase(),p=curP;let shown=0;
   document.querySelectorAll(".cat").forEach(ct=>{let n=0;const cid=ct.dataset.c;
     ct.querySelectorAll(".law").forEach(w=>{const l=all[w.dataset.id];
       const hay=[
@@ -1124,10 +1134,10 @@ function apply(){
 }
 
 $("#nav").addEventListener("click",e=>{const b=e.target.closest(".pl");if(!b)return;cur=b.dataset.c;document.querySelectorAll("#nav .pl").forEach(x=>x.classList.toggle("on",x===b));apply();if(cur)$("#"+cur).scrollIntoView({behavior:"smooth"})});
-$("#q").addEventListener("input",apply);$("#ps").addEventListener("change",()=>{syncP();apply()});
+$("#q").addEventListener("input",apply);$("#ps").addEventListener("change",()=>{curP=$("#ps").value;syncP();apply()});
 const setAll=o=>document.querySelectorAll(".law").forEach(w=>{if(!w.hidden){w.classList.toggle("open",o);w.firstChild.setAttribute("aria-expanded",o)}});
 $("#ex").onclick=()=>setAll(true);$("#co").onclick=()=>setAll(false);
-$("#rs").onclick=()=>{$("#q").value="";$("#ps").value="";cur="";syncP();document.querySelectorAll("#nav .pl").forEach((x,i)=>x.classList.toggle("on",i==0));setAll(false);apply()};
+$("#rs").onclick=()=>{$("#q").value="";curP="";cur="";syncP();document.querySelectorAll("#nav .pl").forEach((x,i)=>x.classList.toggle("on",i==0));setAll(false);apply()};
 
 document.querySelectorAll(".lbtn").forEach(btn=>{
   btn.addEventListener("click",()=>{
